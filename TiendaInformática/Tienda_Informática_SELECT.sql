@@ -58,6 +58,17 @@ limit 1;
 -- 1.16  Obtener una lista con el nombre y precio de los artículos más caros de cada proveedor (incluyendo el nombre del proveedor).
 -- Aquí hay explicación, porque tiene telita. Parece que el campo A.Precio te lo construyes en una subconsulta. Telita.
 
+use `La tienda Informática`;
+Select * from artículos A;
+
+use `La tienda Informática`;
+Select * from fabricantes F;
+
+use `La tienda Informática`;
+Select * from artículos A
+JOIN fabricantes F ON A.Fabricante = F.Código; 
+
+use `La tienda Informática`;
 SELECT A.Nombre, A.Precio, F.Nombre
 FROM ARTÍCULOS A, FABRICANTES F
 WHERE A.Fabricante = F.Código
@@ -65,6 +76,20 @@ AND A.Precio = (
  SELECT MAX(A2.Precio)
  FROM ARTÍCULOS A2
  WHERE A2.Fabricante = F.Código);
+
+use `La tienda Informática`;
+SELECT A.Nombre as Nombre, A.Precio as Precio, 
+    F.Nombre as Fabricante
+FROM ARTÍCULOS A JOIN FABRICANTES F
+ON A.Fabricante = F.Código
+WHERE (A.Precio, F.Nombre) IN
+    SELECT MAX(A.Precio), F.Nombre
+    FROM ARTÍCULOS A JOIN FABRICANTES F
+    ON A.Fabricante = F.Código
+    GROUP BY F.Nombre)
+ORDER BY F.Nombre;
+
+
  
 -- 1.17  Añadir un nuevo producto: Pendrive de 70 € (del fabricante 2).
 INSERT INTO `La tienda Informática`.`Artículos` (`Código`, `Nombre`, `Precio`, `Fabricante`) VALUES (DEFAULT, 'Pendrive', 70, 2);

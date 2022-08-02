@@ -52,31 +52,35 @@ Select count(*) from listado_pedidos_clientes where nombre_apellidos='Akane Tend
 
 -- 6. Utilice las vistas que ha creado en los pasos anteriores
 -- para calcular el valor del pedido máximo y mínimo que ha realizado cada cliente.
-select * from listado_pedidos_clientes;
+use jardineria;
+select nombre_apellidos, max(cantidad_total) from listado_pedidos_clientes
+	group by nombre_apellidos
+UNION
+select nombre_apellidos, min(cantidad_total) from listado_pedidos_clientes
+	group by nombre_apellidos
+	order by nombre_apellidos;
 
-select nombre_apellidos, cantidad_total from listado_pedidos_clientes
-where nombre_apellidos like '%Antonio%'; order by nombre_apellidos, cantidad desc;
-
-(select codigo_pedido, max(cantidad_total) from listado_pedidos_clientes
-					group by nombre_apellidos);
-
-
-
-Select nombre_apellidos, cantidad_total from listado_pedidos_clientes
-where cantidad_total >= ALL (select max(cantidad_total) from listado_pedidos_clientes
-					group by nombre_apellidos)
-group by nombre_apellidos;
-
-Select nombre_apellidos, cantidad_total from listado_pedidos_clientes
-where codigo_pedido = ALL
-	(Select codigo_pedido from listado_pedidos_clientes
-		where cantidad_total in 
-			(select max(cantidad_total) from listado_pedidos_clientes
-			group by nombre_apellidos)
-group by nombre_apellidos)
-order by nombre_apellidos;
 -- 7. Modifique el nombre de las vista listado_pagos_clientesy asígnele el nombre listado_de_pagos.Una vez que
 -- haya modificado el nombre de la vista ejecute una consulta utilizando el nuevo nombre de la vista para
 -- comprobar que sigue funcionando correctamente.
 
 -- 8. Elimine las vistas que ha creado en los pasos anteriores.
+
+-- BONUS
+
+-- 9 Utilice las vistas que ha creado en los pasos anteriores
+-- para calcular el valor de los pedidos de valor máximo y mínimo que ha realizado cada cliente.
+
+use jardineria;
+Select nombre_apellidos, cantidad_total, codigo_pedido from listado_pedidos_clientes
+		where (nombre_apellidos,cantidad_total) in 
+			(select nombre_apellidos, max(cantidad_total) from listado_pedidos_clientes
+			group by nombre_apellidos)
+
+UNION
+
+Select nombre_apellidos, cantidad_total, codigo_pedido from listado_pedidos_clientes
+		where (nombre_apellidos,cantidad_total) in 
+			(select nombre_apellidos, min(cantidad_total) from listado_pedidos_clientes
+			group by nombre_apellidos)
+order by nombre_apellidos;
