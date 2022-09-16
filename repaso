@@ -1,0 +1,3 @@
+use test;
+
+create procedure MayorIgual (in numero1 INT, in numero2 INT, out resultado varchar(20))
